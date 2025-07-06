@@ -3,889 +3,563 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Quiz Generator | Transform Notes into Quizzes</title>
+    <title>QuizGenius Pro | AI-Powered Quiz Generator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #4361ee;
-            --secondary: #3f37c9;
-            --accent: #4895ef;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --success: #4cc9f0;
-            --warning: #f72585;
-            --border-radius: 12px;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --transition: all 0.3s ease;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
-            min-height: 100vh;
-            color: var(--dark);
-            padding-bottom: 40px;
-        }
-        
-        header {
-            background: white;
-            box-shadow: var(--shadow);
-            padding: 15px 5%;
-            display: flex;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .logo {
-            display: flex;
-            align-items: center;
-            margin-right: 30px;
-        }
-        
-        .logo-placeholder {
-            width: 50px;
-            height: 50px;
-            background: var(--primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 20px;
-            margin-right: 15px;
-        }
-        
-        .logo-text {
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--primary);
-            letter-spacing: -0.5px;
-        }
-        
-        .logo-text span {
-            color: var(--accent);
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-        
-        .hero {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-        
-        .hero h1 {
-            font-size: 2.8rem;
-            margin-bottom: 20px;
-            line-height: 1.2;
-            color: var(--secondary);
-            background: linear-gradient(to right, var(--primary), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto 30px;
-            color: #555;
-            line-height: 1.6;
-        }
-        
-        .card {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            padding: 30px;
-            margin-bottom: 30px;
-            transition: var(--transition);
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-        }
-        
-        .card-title {
-            font-size: 1.5rem;
-            margin-bottom: 25px;
-            color: var(--secondary);
-            display: flex;
-            align-items: center;
-        }
-        
-        .card-title i {
-            margin-right: 10px;
-            background: var(--accent);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .upload-area {
-            border: 2px dashed #d1d1d1;
-            border-radius: var(--border-radius);
-            padding: 40px;
-            text-align: center;
-            background: #fafbff;
-            margin-bottom: 25px;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-        
-        .upload-area:hover {
-            border-color: var(--accent);
-            background: #f0f5ff;
-        }
-        
-        .upload-icon {
-            font-size: 50px;
-            color: var(--accent);
-            margin-bottom: 15px;
-        }
-        
-        .file-types {
-            color: #777;
-            margin-top: 15px;
-            font-size: 0.9rem;
-        }
-        
-        .btn {
-            display: inline-block;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px 30px;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
-        }
-        
-        .btn:hover {
-            background: var(--secondary);
-            transform: translateY(-3px);
-            box-shadow: 0 7px 20px rgba(67, 97, 238, 0.4);
-        }
-        
-        .btn:active {
-            transform: translateY(0);
-        }
-        
-        .btn-block {
-            display: block;
-            width: 100%;
-        }
-        
-        .btn-accent {
-            background: var(--accent);
-            box-shadow: 0 4px 15px rgba(72, 149, 239, 0.3);
-        }
-        
-        .btn-accent:hover {
-            background: #3a7bc8;
-            box-shadow: 0 7px 20px rgba(72, 149, 239, 0.4);
-        }
-        
-        .options-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-        
-        .option-card {
-            background: #f8f9ff;
-            border: 1px solid #e6e9ff;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-            position: relative;
-        }
-        
-        .option-card:hover {
-            background: #edf1ff;
-            transform: translateY(-3px);
-            border-color: var(--accent);
-        }
-        
-        .option-card.selected {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-        
-        .option-card.selected .option-icon {
-            color: white;
-        }
-        
-        .option-icon {
-            font-size: 30px;
-            margin-bottom: 15px;
-            color: var(--accent);
-        }
-        
-        .marks-input-container {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 25px;
-            gap: 20px;
-        }
-        
-        .marks-section {
-            flex: 1;
-            background: #f0f5ff;
-            border-radius: var(--border-radius);
-            padding: 20px;
-        }
-        
-        .marks-section h3 {
-            margin-bottom: 15px;
-            color: var(--secondary);
-            display: flex;
-            align-items: center;
-        }
-        
-        .marks-section h3 i {
-            margin-right: 10px;
-            color: var(--accent);
-        }
-        
-        .marks-input {
-            margin-bottom: 15px;
-        }
-        
-        .marks-input label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #555;
-        }
-        
-        .marks-input input {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-        }
-        
-        .marks-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            gap: 12px;
-        }
-        
-        .mark-input-group {
-            background: white;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        
-        .mark-input-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            color: #555;
-        }
-        
-        .mark-input-group input {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-        }
-        
-        .quiz-preview {
-            background: #f0f5ff;
-            border-radius: var(--border-radius);
-            padding: 25px;
-            margin-top: 30px;
-            display: none;
-        }
-        
-        .preview-title {
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-            color: var(--secondary);
-            display: flex;
-            align-items: center;
-        }
-        
-        .preview-title i {
-            margin-right: 10px;
-            color: var(--accent);
-        }
-        
-        .question {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        }
-        
-        .question-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            align-items: center;
-        }
-        
-        .question-type {
-            background: var(--accent);
-            color: white;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-        }
-        
-        .question-marks {
-            background: #e0e7ff;
-            color: var(--secondary);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-        
-        .question-text {
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            line-height: 1.5;
-        }
-        
-        .options {
-            padding-left: 20px;
-        }
-        
-        .option {
-            margin-bottom: 10px;
-            padding: 8px 0;
-            display: flex;
-            align-items: center;
-        }
-        
-        .option input[type="radio"] {
-            margin-right: 10px;
-        }
-        
-        .progress-container {
-            margin: 40px 0 20px;
-            text-align: center;
-        }
-        
-        .progress-bar {
-            height: 8px;
-            background: #e0e7ff;
-            border-radius: 10px;
-            overflow: hidden;
-            margin: 10px 0;
-        }
-        
-        .progress {
-            height: 100%;
-            background: var(--accent);
-            border-radius: 10px;
-            width: 0%;
-            transition: width 0.5s ease;
-        }
-        
-        .summary-box {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 20px;
-            margin-top: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-            display: flex;
-            justify-content: space-around;
-            text-align: center;
-        }
-        
-        .summary-item {
-            padding: 10px;
-        }
-        
-        .summary-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        
-        .summary-label {
-            font-size: 0.9rem;
-            color: #777;
-        }
-        
-        .footer {
-            text-align: center;
-            margin-top: 50px;
-            color: #777;
-            font-size: 0.9rem;
-        }
-        
-        /* Responsive design */
-        @media (max-width: 900px) {
-            .hero h1 {
-                font-size: 2.2rem;
-            }
-            
-            .options-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            }
-            
-            .card {
-                padding: 20px;
-            }
-            
-            .marks-input-container {
-                flex-direction: column;
-            }
-        }
-        
-        @media (max-width: 600px) {
-            .hero h1 {
-                font-size: 1.8rem;
-            }
-            
-            .options-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .marks-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <div class="logo-placeholder">Q</div>
-            <div class="logo-text">Quiz<span>Genius</span></div>
+    <div class="particles-container" id="particles"></div>
+    
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="logo-text">QuizGenius <span>Pro</span></div>
+                </div>
+                
+                <nav class="nav-menu">
+                    <a href="#" class="nav-link active">Dashboard</a>
+                    <a href="#" class="nav-link">Create Quiz</a>
+                    <a href="#" class="nav-link">History</a>
+                    <a href="#" class="nav-link">Settings</a>
+                </nav>
+                
+                <div class="header-actions">
+                    <button class="btn btn--outline btn--sm" id="loginBtn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login
+                    </button>
+                    <button class="btn btn--primary btn--sm" id="signupBtn">
+                        <i class="fas fa-user-plus"></i>
+                        Sign Up
+                    </button>
+                    <div class="user-profile hidden" id="userProfile">
+                        <div class="profile-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="profile-dropdown">
+                            <div class="profile-info">
+                                <div class="profile-name">John Doe</div>
+                                <div class="profile-email">john@example.com</div>
+                            </div>
+                            <div class="profile-actions">
+                                <button class="profile-action" id="profileBtn">
+                                    <i class="fas fa-user-cog"></i>
+                                    Profile
+                                </button>
+                                <button class="profile-action" id="logoutBtn">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    Logout
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
-    <div class="container">
-        <div class="hero">
-            <h1>Transform Your Study Materials into Interactive Quizzes</h1>
-            <p>Upload your notes and let our AI generate customized quizzes with detailed marks configuration.</p>
-        </div>
+    <main class="main-content">
+        <div class="container">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        <span class="typing-text">Transform Your Study Materials</span>
+                        <span class="gradient-text">into Interactive Quizzes</span>
+                    </h1>
+                    <p class="hero-description">Upload your notes and let our AI generate customized quizzes with detailed configuration and comprehensive history tracking.</p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <div class="stat-number" data-count="10000">0</div>
+                            <div class="stat-label">Quizzes Generated</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" data-count="50000">0</div>
+                            <div class="stat-label">Students Helped</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" data-count="95">0</div>
+                            <div class="stat-label">Success Rate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <div class="card">
-            <h2 class="card-title"><i class="fas fa-file-upload"></i> Upload Your Study Materials</h2>
-            
-            <div class="upload-area" id="uploadArea">
-                <div class="upload-icon">
-                    <i class="fas fa-cloud-upload-alt"></i>
+            <div class="dashboard-container">
+                <div class="tab-navigation">
+                    <button class="tab-btn active" data-tab="create">
+                        <i class="fas fa-plus-circle"></i>
+                        Create Quiz
+                    </button>
+                    <button class="tab-btn" data-tab="history">
+                        <i class="fas fa-history"></i>
+                        History
+                    </button>
                 </div>
-                <h3>Drag & Drop your files here</h3>
-                <p>or click to browse files</p>
-                <div class="file-types">Supported formats: PDF, DOCX, TXT, PPTX</div>
-            </div>
-            <input type="file" id="fileInput" accept=".pdf,.docx,.txt,.pptx" hidden>
-            <div id="fileName" class="file-name" style="margin-bottom: 20px; font-weight: 500; display: none;"></div>
-        </div>
 
-        <div class="card">
-            <h2 class="card-title"><i class="fas fa-cog"></i> Configure Your Quiz</h2>
-            
-            <div class="options-grid">
-                <div class="option-card" data-type="mcq">
-                    <div class="option-icon">
-                        <i class="fas fa-list-ol"></i>
-                    </div>
-                    <h3>MCQ</h3>
-                    <p>Multiple Choice Questions</p>
-                </div>
-                
-                <div class="option-card" data-type="truefalse">
-                    <div class="option-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <h3>True/False</h3>
-                    <p>True or False statements</p>
-                </div>
-                
-                <div class="option-card" data-type="fillblank">
-                    <div class="option-icon">
-                        <i class="fas fa-pencil-alt"></i>
-                    </div>
-                    <h3>Fill in Blank</h3>
-                    <p>Fill missing words</p>
-                </div>
-                
-                <div class="option-card" data-type="short">
-                    <div class="option-icon">
-                        <i class="fas fa-comment-alt"></i>
-                    </div>
-                    <h3>Short Answer</h3>
-                    <p>Brief written responses</p>
-                </div>
-                
-                <div class="option-card" data-type="board">
-                    <div class="option-icon">
-                        <i class="fas fa-chalkboard"></i>
-                    </div>
-                    <h3>Board Questions</h3>
-                    <p>Exam-style questions</p>
-                </div>
-            </div>
-            
-            <div class="marks-input-container">
-                <div class="marks-section">
-                    <h3><i class="fas fa-sliders-h"></i> Quiz Settings</h3>
-                    
-                    <div class="marks-input">
-                        <label for="questionCount">Number of Questions:</label>
-                        <input type="number" id="questionCount" min="5" max="50" value="15">
-                    </div>
-                    
-                    <div class="marks-input">
-                        <label for="totalMarks">Total Marks:</label>
-                        <input type="number" id="totalMarks" min="10" max="200" value="100">
-                    </div>
-                    
-                    <div class="marks-input">
-                        <label for="timeLimit">Time Limit (minutes):</label>
-                        <input type="number" id="timeLimit" min="5" max="180" value="60">
-                    </div>
-                </div>
-                
-                <div class="marks-section">
-                    <h3><i class="fas fa-star"></i> Marks Per Question Type</h3>
-                    
-                    <div class="marks-grid">
-                        <div class="mark-input-group">
-                            <label for="mcqMarks">MCQ Marks:</label>
-                            <input type="number" id="mcqMarks" min="1" max="10" value="2">
+                <div class="tab-content active" id="createTab">
+                    <div class="card glass-card slide-in" data-delay="0.2">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                Upload Your Study Materials
+                            </h2>
                         </div>
                         
-                        <div class="mark-input-group">
-                            <label for="tfMarks">True/False Marks:</label>
-                            <input type="number" id="tfMarks" min="1" max="10" value="1">
-                        </div>
-                        
-                        <div class="mark-input-group">
-                            <label for="fibMarks">Fill in Blank:</label>
-                            <input type="number" id="fibMarks" min="1" max="10" value="1">
-                        </div>
-                        
-                        <div class="mark-input-group">
-                            <label for="shortMarks">Short Answer:</label>
-                            <input type="number" id="shortMarks" min="1" max="10" value="3">
-                        </div>
-                        
-                        <div class="mark-input-group">
-                            <label for="boardMarks">Board Questions:</label>
-                            <input type="number" id="boardMarks" min="1" max="10" value="5">
+                        <div class="upload-section">
+                            <div class="upload-area" id="uploadArea">
+                                <div class="upload-content">
+                                    <div class="upload-icon">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                    </div>
+                                    <h3>Drag & Drop your files here</h3>
+                                    <p>or click to browse files</p>
+                                    <div class="file-types">
+                                        <span class="file-type">PDF</span>
+                                        <span class="file-type">DOCX</span>
+                                        <span class="file-type">TXT</span>
+                                        <span class="file-type">PPTX</span>
+                                    </div>
+                                </div>
+                                <div class="upload-progress" id="uploadProgress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="progressFill"></div>
+                                    </div>
+                                    <div class="progress-text">Uploading...</div>
+                                </div>
+                            </div>
+                            <input type="file" id="fileInput" accept=".pdf,.docx,.txt,.pptx" hidden>
+                            <div class="file-info" id="fileInfo">
+                                <div class="file-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="file-details">
+                                    <div class="file-name" id="fileName"></div>
+                                    <div class="file-size" id="fileSize"></div>
+                                </div>
+                                <button class="remove-file" id="removeFile">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <button class="btn btn-block btn-accent" id="generateBtn" style="margin-top: 25px;">
-                <i class="fas fa-bolt"></i> Generate Quiz
-            </button>
-        </div>
 
-        <div class="quiz-preview" id="quizPreview">
-            <h3 class="preview-title"><i class="fas fa-file-alt"></i> Generated Quiz Preview</h3>
-            
-            <div class="progress-container">
-                <p>AI is generating your quiz... <span id="progressPercent">0%</span></p>
-                <div class="progress-bar">
-                    <div class="progress" id="progressBar"></div>
+                    <div class="card glass-card slide-in" data-delay="0.4">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-cog"></i>
+                                </div>
+                                Configure Your Quiz
+                            </h2>
+                        </div>
+                        
+                        <div class="question-types">
+                            <div class="section-title">Select Question Types</div>
+                            <div class="options-grid">
+                                <div class="option-card" data-type="mcq">
+                                    <div class="option-icon">
+                                        <i class="fas fa-list-ol"></i>
+                                    </div>
+                                    <h3>MCQ</h3>
+                                    <p>Multiple Choice Questions</p>
+                                    <div class="selection-indicator">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="option-card" data-type="truefalse">
+                                    <div class="option-icon">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <h3>True/False</h3>
+                                    <p>True or False statements</p>
+                                    <div class="selection-indicator">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="option-card" data-type="fillblank">
+                                    <div class="option-icon">
+                                        <i class="fas fa-pencil-alt"></i>
+                                    </div>
+                                    <h3>Fill in Blank</h3>
+                                    <p>Fill missing words</p>
+                                    <div class="selection-indicator">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="option-card" data-type="short">
+                                    <div class="option-icon">
+                                        <i class="fas fa-comment-alt"></i>
+                                    </div>
+                                    <h3>Short Answer</h3>
+                                    <p>Brief written responses</p>
+                                    <div class="selection-indicator">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="option-card" data-type="board">
+                                    <div class="option-icon">
+                                        <i class="fas fa-chalkboard"></i>
+                                    </div>
+                                    <h3>Board Questions</h3>
+                                    <p>Exam-style questions</p>
+                                    <div class="selection-indicator">
+                                        <i class="fas fa-check"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="config-sections">
+                            <div class="config-section">
+                                <div class="section-title">
+                                    <i class="fas fa-sliders-h"></i>
+                                    Quiz Settings
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="questionCount">Number of Questions</label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="questionCount" class="form-control" min="5" max="50" value="15">
+                                        <div class="input-highlight"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="totalMarks">Total Marks</label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="totalMarks" class="form-control" min="10" max="200" value="100">
+                                        <div class="input-highlight"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label" for="timeLimit">Time Limit (minutes)</label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="timeLimit" class="form-control" min="5" max="180" value="60">
+                                        <div class="input-highlight"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="config-section">
+                                <div class="section-title">
+                                    <i class="fas fa-star"></i>
+                                    Marks Per Question Type
+                                </div>
+                                
+                                <div class="marks-grid">
+                                    <div class="mark-input-group">
+                                        <label class="form-label" for="mcqMarks">MCQ Marks</label>
+                                        <div class="input-wrapper">
+                                            <input type="number" id="mcqMarks" class="form-control" min="1" max="10" value="2">
+                                            <div class="input-highlight"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mark-input-group">
+                                        <label class="form-label" for="tfMarks">True/False Marks</label>
+                                        <div class="input-wrapper">
+                                            <input type="number" id="tfMarks" class="form-control" min="1" max="10" value="1">
+                                            <div class="input-highlight"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mark-input-group">
+                                        <label class="form-label" for="fibMarks">Fill in Blank</label>
+                                        <div class="input-wrapper">
+                                            <input type="number" id="fibMarks" class="form-control" min="1" max="10" value="1">
+                                            <div class="input-highlight"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mark-input-group">
+                                        <label class="form-label" for="shortMarks">Short Answer</label>
+                                        <div class="input-wrapper">
+                                            <input type="number" id="shortMarks" class="form-control" min="1" max="10" value="3">
+                                            <div class="input-highlight"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mark-input-group">
+                                        <label class="form-label" for="boardMarks">Board Questions</label>
+                                        <div class="input-wrapper">
+                                            <input type="number" id="boardMarks" class="form-control" min="1" max="10" value="5">
+                                            <div class="input-highlight"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="generate-section">
+                            <button class="btn btn--primary btn--lg btn--full-width ripple-effect" id="generateBtn">
+                                <span class="btn-text">
+                                    <i class="fas fa-magic"></i>
+                                    Generate Quiz
+                                </span>
+                                <div class="btn-loader">
+                                    <div class="spinner"></div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card glass-card quiz-preview" id="quizPreview">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                Generated Quiz Preview
+                            </h2>
+                        </div>
+                        
+                        <div class="generation-progress" id="generationProgress">
+                            <div class="progress-info">
+                                <div class="progress-text">AI is generating your quiz...</div>
+                                <div class="progress-percent" id="progressPercent">0%</div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill gradient-progress" id="progressBar"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="quiz-summary" id="quizSummary">
+                            <div class="summary-cards">
+                                <div class="summary-card">
+                                    <div class="summary-icon">
+                                        <i class="fas fa-tasks"></i>
+                                    </div>
+                                    <div class="summary-value" id="previewQuestionCount">15</div>
+                                    <div class="summary-label">Questions</div>
+                                </div>
+                                <div class="summary-card">
+                                    <div class="summary-icon">
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <div class="summary-value" id="previewTotalMarks">100</div>
+                                    <div class="summary-label">Total Marks</div>
+                                </div>
+                                <div class="summary-card">
+                                    <div class="summary-icon">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <div class="summary-value" id="previewTimeLimit">60</div>
+                                    <div class="summary-label">Minutes</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="questions-container" id="questionsContainer">
+                            <!-- Questions will be dynamically inserted here -->
+                        </div>
+                        
+                        <div class="quiz-actions" id="quizActions">
+                            <button class="btn btn--primary ripple-effect" id="downloadBtn">
+                                <i class="fas fa-download"></i>
+                                Download Quiz
+                            </button>
+                            <button class="btn btn--secondary ripple-effect" id="emailBtn">
+                                <i class="fas fa-envelope"></i>
+                                Email Quiz
+                            </button>
+                            <button class="btn btn--outline ripple-effect" id="regenerateBtn">
+                                <i class="fas fa-sync-alt"></i>
+                                Regenerate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="historyTab">
+                    <div class="card glass-card">
+                        <div class="card-header">
+                            <h2 class="card-title">
+                                <div class="icon-wrapper">
+                                    <i class="fas fa-history"></i>
+                                </div>
+                                Quiz History
+                            </h2>
+                            <div class="history-actions">
+                                <div class="search-box">
+                                    <input type="text" placeholder="Search quizzes..." class="search-input" id="searchInput">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <select class="filter-select" id="filterSelect">
+                                    <option value="all">All Status</option>
+                                    <option value="Published">Published</option>
+                                    <option value="Draft">Draft</option>
+                                    <option value="Completed">Completed</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="history-stats">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-value" id="totalQuizzes">8</div>
+                                    <div class="stat-label">Total Quizzes</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-value" id="publishedQuizzes">4</div>
+                                    <div class="stat-label">Published</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-value" id="averageMarks">81</div>
+                                    <div class="stat-label">Avg. Marks</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-value" id="totalTime">405</div>
+                                    <div class="stat-label">Total Minutes</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="history-list" id="historyList">
+                            <!-- History items will be dynamically inserted here -->
+                        </div>
+                    </div>
                 </div>
             </div>
-            
-            <div class="summary-box">
-                <div class="summary-item">
-                    <div class="summary-value" id="previewTotalMarks">100</div>
-                    <div class="summary-label">Total Marks</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-value" id="previewQuestionCount">15</div>
-                    <div class="summary-label">Questions</div>
-                </div>
-                <div class="summary-item">
-                    <div class="summary-value" id="previewTimeLimit">60</div>
-                    <div class="summary-label">Minutes</div>
-                </div>
-            </div>
-            
-            <div id="questionsContainer">
-                <!-- Questions will be dynamically inserted here -->
-            </div>
-            
-            <div style="text-align: center; margin-top: 30px;">
-                <button class="btn" id="downloadBtn" style="margin-right: 15px;">
-                    <i class="fas fa-download"></i> Download Quiz (PDF)
+        </div>
+    </main>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Login to QuizGenius Pro</h2>
+                <button class="modal-close" id="loginModalClose">
+                    <i class="fas fa-times"></i>
                 </button>
-                <button class="btn btn-accent" id="emailBtn">
-                    <i class="fas fa-envelope"></i> Email Quiz
-                </button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" placeholder="Enter your password" required>
+                    </div>
+                    <div class="form-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox">
+                            <span class="checkmark"></span>
+                            Remember me
+                        </label>
+                        <a href="#" class="forgot-password">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width">Login</button>
+                </form>
+                <div class="social-login">
+                    <div class="divider">
+                        <span>or continue with</span>
+                    </div>
+                    <div class="social-buttons">
+                        <button class="btn btn--social">
+                            <i class="fab fa-google"></i>
+                            Google
+                        </button>
+                        <button class="btn btn--social">
+                            <i class="fab fa-github"></i>
+                            GitHub
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="footer">
-        <p>© 2023 QuizGenius AI | Transform Your Study Materials into Interactive Quizzes</p>
+    <!-- Signup Modal -->
+    <div class="modal" id="signupModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Sign Up for QuizGenius Pro</h2>
+                <button class="modal-close" id="signupModalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="signupForm">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" placeholder="Create a password" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" placeholder="Confirm your password" required>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width">Sign Up</button>
+                </form>
+                <div class="social-login">
+                    <div class="divider">
+                        <span>or continue with</span>
+                    </div>
+                    <div class="social-buttons">
+                        <button class="btn btn--social">
+                            <i class="fab fa-google"></i>
+                            Google
+                        </button>
+                        <button class="btn btn--social">
+                            <i class="fab fa-github"></i>
+                            GitHub
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Elements
-            const uploadArea = document.getElementById('uploadArea');
-            const fileInput = document.getElementById('fileInput');
-            const fileName = document.getElementById('fileName');
-            const generateBtn = document.getElementById('generateBtn');
-            const quizPreview = document.getElementById('quizPreview');
-            const progressBar = document.getElementById('progressBar');
-            const progressPercent = document.getElementById('progressPercent');
-            const questionsContainer = document.getElementById('questionsContainer');
-            const downloadBtn = document.getElementById('downloadBtn');
-            const emailBtn = document.getElementById('emailBtn');
-            const optionCards = document.querySelectorAll('.option-card');
-            const questionCountInput = document.getElementById('questionCount');
-            const totalMarksInput = document.getElementById('totalMarks');
-            const timeLimitInput = document.getElementById('timeLimit');
-            const previewTotalMarks = document.getElementById('previewTotalMarks');
-            const previewQuestionCount = document.getElementById('previewQuestionCount');
-            const previewTimeLimit = document.getElementById('previewTimeLimit');
-            
-            // Marks per question type
-            const mcqMarksInput = document.getElementById('mcqMarks');
-            const tfMarksInput = document.getElementById('tfMarks');
-            const fibMarksInput = document.getElementById('fibMarks');
-            const shortMarksInput = document.getElementById('shortMarks');
-            const boardMarksInput = document.getElementById('boardMarks');
-            
-            // Variables
-            let selectedTypes = [];
-            
-            // Upload area click handler
-            uploadArea.addEventListener('click', () => {
-                fileInput.click();
-            });
-            
-            // File input change handler
-            fileInput.addEventListener('change', (e) => {
-                if (e.target.files.length > 0) {
-                    const file = e.target.files[0];
-                    fileName.textContent = `Selected file: ${file.name}`;
-                    fileName.style.display = 'block';
-                }
-            });
-            
-            // Option card selection
-            optionCards.forEach(card => {
-                card.addEventListener('click', () => {
-                    const type = card.dataset.type;
-                    
-                    if (card.classList.contains('selected')) {
-                        card.classList.remove('selected');
-                        selectedTypes = selectedTypes.filter(t => t !== type);
-                    } else {
-                        card.classList.add('selected');
-                        selectedTypes.push(type);
-                    }
-                });
-            });
-            
-            // Generate quiz
-            generateBtn.addEventListener('click', () => {
-                if (fileInput.files.length === 0) {
-                    alert('Please select a file first!');
-                    return;
-                }
-                
-                if (selectedTypes.length === 0) {
-                    alert('Please select at least one question type!');
-                    return;
-                }
-                
-                // Update preview summary
-                previewTotalMarks.textContent = totalMarksInput.value;
-                previewQuestionCount.textContent = questionCountInput.value;
-                previewTimeLimit.textContent = timeLimitInput.value;
-                
-                // Show quiz preview
-                quizPreview.style.display = 'block';
-                
-                // Scroll to preview
-                quizPreview.scrollIntoView({ behavior: 'smooth' });
-                
-                // Simulate AI processing
-                let progress = 0;
-                const interval = setInterval(() => {
-                    progress += 2;
-                    progressBar.style.width = `${progress}%`;
-                    progressPercent.textContent = `${progress}%`;
-                    
-                    if (progress >= 100) {
-                        clearInterval(interval);
-                        generateSampleQuestions();
-                    }
-                }, 50);
-            });
-            
-            // Download button handler
-            downloadBtn.addEventListener('click', () => {
-                alert('Your quiz PDF is being generated. In a real application, this would download a PDF file.');
-            });
-            
-            // Email button handler
-            emailBtn.addEventListener('click', () => {
-                alert('Quiz sent to your email! In a real application, this would email the quiz to the specified address.');
-            });
-            
-            // Generate sample questions for preview
-            function generateSampleQuestions() {
-                questionsContainer.innerHTML = '';
-                
-                const questionCount = document.getElementById('questionCount').value || 15;
-                
-                // Add a title to the quiz
-                questionsContainer.innerHTML = `
-                    <div style="text-align: center; margin: 30px 0;">
-                        <h2 style="color: var(--secondary);">AI-Generated Quiz</h2>
-                        <p style="color: #666;">Based on your uploaded materials</p>
-                    </div>
-                `;
-                
-                // Generate sample questions
-                for (let i = 1; i <= 5; i++) {
-                    const questionType = getRandomQuestionType();
-                    const questionHTML = generateQuestionHTML(i, questionType);
-                    questionsContainer.innerHTML += questionHTML;
-                }
-                
-                questionsContainer.innerHTML += `<p style="text-align: center; margin: 40px 0 20px; font-style: italic; color: #777;">+ ${questionCount - 5} more questions generated by AI...</p>`;
-            }
-            
-            function getRandomQuestionType() {
-                const types = [
-                    { type: 'MCQ', marks: mcqMarksInput.value },
-                    { type: 'True/False', marks: tfMarksInput.value },
-                    { type: 'Fill in Blank', marks: fibMarksInput.value },
-                    { type: 'Short Answer', marks: shortMarksInput.value },
-                    { type: 'Board Question', marks: boardMarksInput.value }
-                ];
-                return types[Math.floor(Math.random() * types.length)];
-            }
-            
-            function generateQuestionHTML(index, typeData) {
-                const type = typeData.type;
-                const marks = typeData.marks;
-                
-                let optionsHTML = '';
-                
-                if (type === 'MCQ') {
-                    optionsHTML = `
-                        <div class="options">
-                            <div class="option">
-                                <input type="radio" name="q${index}" id="q${index}a">
-                                <label for="q${index}a">Photosynthesis</label>
-                            </div>
-                            <div class="option">
-                                <input type="radio" name="q${index}" id="q${index}b">
-                                <label for="q${index}b">Respiration</label>
-                            </div>
-                            <div class="option">
-                                <input type="radio" name="q${index}" id="q${index}c">
-                                <label for="q${index}c">Fermentation</label>
-                            </div>
-                            <div class="option">
-                                <input type="radio" name="q${index}" id="q${index}d">
-                                <label for="q${index}d">Transpiration</label>
-                            </div>
-                        </div>
-                    `;
-                } else if (type === 'True/False') {
-                    optionsHTML = `
-                        <div class="options">
-                            <div class="option">
-                                <input type="radio" name="q${index}" id="q${index}true">
-                                <label for="q${index}true">True</label>
-                            </div>
-                            <div class="option">
-                                <input type="radio" name="q${index}" id="q${index}false">
-                                <label for="q${index}false">False</label>
-                            </div>
-                        </div>
-                    `;
-                } else if (type === 'Fill in Blank') {
-                    optionsHTML = `
-                        <div class="options">
-                            <div class="option">
-                                <input type="text" placeholder="Type your answer here" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
-                            </div>
-                        </div>
-                    `;
-                } else if (type === 'Short Answer') {
-                    optionsHTML = `
-                        <div class="options">
-                            <div class="option">
-                                <textarea placeholder="Type your answer here" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; min-height: 80px;"></textarea>
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                return `
-                    <div class="question">
-                        <div class="question-header">
-                            <div class="question-number">Question #${index}</div>
-                            <div>
-                                <span class="question-type">${type}</span>
-                                <span class="question-marks">${marks} Marks</span>
-                            </div>
-                        </div>
-                        <div class="question-text">
-                            ${getSampleQuestionText(type)}
-                        </div>
-                        ${optionsHTML}
-                    </div>
-                `;
-            }
-            
-            function getSampleQuestionText(type) {
-                if (type === 'MCQ') {
-                    return "Which process do plants use to convert sunlight into chemical energy?";
-                } else if (type === 'True/False') {
-                    return "Mitochondria are known as the powerhouses of the cell.";
-                } else if (type === 'Fill in Blank') {
-                    return "The process by which plants lose water through their leaves is called __________.";
-                } else if (type === 'Short Answer') {
-                    return "Explain the significance of the Krebs cycle in cellular respiration.";
-                } else {
-                    return "Describe the process of protein synthesis in eukaryotic cells, including transcription and translation.";
-                }
-            }
-        });
-    </script>
+    <div class="floating-action-btn" id="floatingActionBtn">
+        <i class="fas fa-plus"></i>
+        <div class="fab-tooltip">Quick Actions</div>
+    </div>
+
+    <div class="notification" id="notification">
+        <div class="notification-content">
+            <i class="fas fa-check-circle"></i>
+            <span class="notification-text">Success!</span>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
 </body>
 </html>
